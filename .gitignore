@@ -1,0 +1,10 @@
+*~*
+*.swp
+*.swo
+*.log
+.DS_Store
+
+# Ignore para Eclipse IDE
+.settings
+.project
+.buildpath
