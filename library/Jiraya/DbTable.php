@@ -3,7 +3,8 @@ class DbTable
 {
 	private $_connection;
 	
-	public function __construct() {
+	public function __construct()
+	{
 		try {
 			$this->Conexao = new PDO(
 				self::DRIVER.":host=".self::HOST."; dbname=".self::BANCO,

@@ -5,7 +5,6 @@ class Controller
 	
 	public function __construct()
 	{
-		echo "__construct";
 		$this->view = new View();
 	}
 }
