@@ -8,6 +8,6 @@ class IndexController extends Controller
 	
 	public function indexAction()
 	{
-		$this->view->assign("foo", "bar");
+		$this->view->assign("message", "Hello World!");
 	} 
 }

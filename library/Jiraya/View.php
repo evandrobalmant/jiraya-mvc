@@ -19,7 +19,13 @@ class View
 	
 	public function render($template_name)
 	{
-		return "view" . DIRECTORY_SEPARATOR . $template_name . "." . self::$view_extension;
+		$template = APPLICATION_PATH . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $template_name . "." . self::$view_extension;
+		foreach($this->_variables as $key => $value) {
+			$this->{$key} = $value;
+		}
+		ob_start();
+		include $template;
+		return ob_get_clean();
 	}
 	
 	public function disableRenderer()
