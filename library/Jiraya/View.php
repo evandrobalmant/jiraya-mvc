@@ -5,7 +5,14 @@ class View
 	
 	private $_renderer = true;
 	
-	public static $view_extension = "phtml";
+	public static $tpl_extension = "phtml";
+	
+	private $_helper;
+	
+	public function __construct()
+	{
+		$this->_helper = new Helper();
+	}
 	
 	public function assign($param, $value)
 	{
@@ -19,7 +26,7 @@ class View
 	
 	public function render($template_name)
 	{
-		$template = APPLICATION_PATH . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $template_name . "." . self::$view_extension;
+		$template = APPLICATION_PATH . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $template_name . "." . self::$tpl_extension;
 		foreach($this->_variables as $key => $value) {
 			$this->{$key} = $value;
 		}

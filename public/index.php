@@ -13,6 +13,8 @@ set_include_path(implode(PATH_SEPARATOR, array(
 	realpath(APPLICATION_PATH . '/../library'),
 	realpath(APPLICATION_PATH . '/../library/Jiraya'),
 	realpath(APPLICATION_PATH . '/controllers/'),
+	realpath(APPLICATION_PATH . '/models/'),
+	realpath(APPLICATION_PATH . '/models/dao/'),
 	get_include_path()
 )));
 

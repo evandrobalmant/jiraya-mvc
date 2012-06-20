@@ -1,1 +1,6 @@
-<h1><?php echo $this->message;?></h1>
+<h1><?php echo $this->title;?></h1>
+<p><?php echo $this->message;?></p>
+<ul>
+	<li><a href="<?php echo $this->_helper->url(array("controller"=>"hello-world"))?>">Hello World Page</a></li>
+	<li><a href="http://github.com/evandrobalmant/jiraya-mvc" target="_blank">Github Project</a></li>
+</ul>
