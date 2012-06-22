@@ -1,4 +1,16 @@
 <?php
+/**
+ * Jiraya MVC Framework
+ *
+ * LICENSE
+ * Este arquivo fonte está sujeito a nova licença BSD que é fornecido
+ * com este pacote no arquivo LICENSE.txt.
+ *
+ * @category   Jiraya
+ * @package    Application
+ * @copyright  Copyright (c) 2012 Evandro Klimpel Balmant
+ */
+
 class Application
 {
 	public static $config;

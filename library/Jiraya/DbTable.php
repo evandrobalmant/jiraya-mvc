@@ -1,4 +1,16 @@
 <?php
+/**
+ * Jiraya MVC Framework
+ *
+ * LICENSE
+ * Este arquivo fonte está sujeito a nova licença BSD que é fornecido
+ * com este pacote no arquivo LICENSE.txt.
+ *
+ * @category   Jiraya
+ * @package    DbTable
+ * @copyright  Copyright (c) 2012 Evandro Klimpel Balmant
+ */
+
 class DbTable
 {
 	private $_connection;
@@ -6,14 +18,15 @@ class DbTable
 	public function __construct()
 	{
 		try {
-			$this->Conexao = new PDO(
-				self::DRIVER.":host=".self::HOST."; dbname=".self::BANCO,
-				self::USUARIO,
-				self::SENHA
+			//new PDO('mysql:host=localhost;dbname=nome_do_banco', 'username', 'password');
+			$this->_connection = new PDO(
+				Application::$config['db']['adapter'].":host=".Application::$config['db']['host'].";dbname=".Application::$config['db']['dbname'],
+				Application::$config['db']['username'],
+				Application::$config['db']['password']
 			);
-			$this->Conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (Exception $e) {
-			echo "Erro ao conectar ao banco de dados: ".$e->getMessage();
+			echo "Erro ao conectar ao banco de dados: " . $e->getMessage();
 		}
 	}
 		
