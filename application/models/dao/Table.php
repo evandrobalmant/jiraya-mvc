@@ -1,5 +1,5 @@
 <?php
 class Table extends DbTable
 {
-	private $_name = "table";
+	protected $_name = "table";
 }
