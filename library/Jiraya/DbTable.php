@@ -15,6 +15,8 @@ class DbTable
 {
 	private $_connection;
 	
+	protected $_name;
+	
 	public function __construct()
 	{
 		try {
@@ -45,7 +47,11 @@ class DbTable
 	{}
 	
 	public function insert(array $data)
-	{}
+	{
+		$statement = "INSERT INTO " . $this->_name . "(" .implode(",", array_map("mysql_escape_string", array_keys($data))) . ") VALUES ('" . implode("', '", array_map("mysql_escape_string", array_values($data))) . "');";
+		$this->_connection->exec($statement);
+		return $this->_connection->lastInsertId();
+	}
 	
 	public function update(array $data)
 	{}
