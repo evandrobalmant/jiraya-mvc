@@ -13,7 +13,7 @@
 
 class DbTable
 {
-	static private $PDOInstance;
+	private static $PDOInstance;
 	
 	protected $_name;
 	
@@ -45,7 +45,7 @@ class DbTable
 	}
 
 	/**
-	 * Inicia transação
+	 * Inicia transaÃ§Ã£o
 	 *
 	 * @return bool
 	 */
@@ -55,7 +55,7 @@ class DbTable
 	}
 
 	/**
-	 * Comita a transação
+	 * Comita a transaÃ§Ã£o
 	 *
 	 * @return bool
 	 */
@@ -95,27 +95,6 @@ class DbTable
 	}
 
 	/**
-	 * Retrieve a database connection attribute
-	 *
-	 * @param int $attribute
-	 * @return mixed
-	 */
-	public function getAttribute($attribute)
-	{
-		return self::$PDOInstance->getAttribute($attribute);
-	}
-
-	/**
-	 * Return an array of available PDO drivers
-	 *
-	 * @return array
-	 */
-	public function getAvailableDrivers()
-	{
-		return self::$PDOInstance->getAvailableDrivers();
-	}
-
-	/**
 	 * Returns the ID of the last inserted row or sequence value
 	 *
 	 * @param string $name Name of the sequence object from which the ID should be returned.
@@ -152,51 +131,6 @@ class DbTable
 	}
 
 	/**
-	 * Execute query and return all rows in assoc array
-	 *
-	 * @param string $statement
-	 * @return array
-	 */
-	public function queryFetchAllAssoc($statement)
-	{
-		return self::$PDOInstance->query($statement)->fetchAll(PDO::FETCH_ASSOC);
-	}
-
-	/**
-	 * Execute query and return one row in assoc array
-	 *
-	 * @param string $statement
-	 * @return array
-	 */
-	public function queryFetchRowAssoc($statement)
-	{
-		return self::$PDOInstance->query($statement)->fetch(PDO::FETCH_ASSOC);
-	}
-
-	/**
-	 * Execute query and select one column only
-	 *
-	 * @param string $statement
-	 * @return mixed
-	 */
-	public function queryFetchColAssoc($statement)
-	{
-		return self::$PDOInstance->query($statement)->fetchColumn();
-	}
-
-	/**
-	 * Quotes a string for use in a query
-	 *
-	 * @param string $input
-	 * @param int $parameter_type
-	 * @return string
-	 */
-	public function quote($input, $parameter_type=0)
-	{
-		return self::$PDOInstance->quote($input, $parameter_type);
-	}
-
-	/**
 	 * Rolls back a transaction
 	 *
 	 * @return bool
@@ -205,19 +139,50 @@ class DbTable
 	{
 		return self::$PDOInstance->rollBack();
     }
-    
-    /**
-     * Set an attribute
-     * 
-     * @param int $attribute
-     * @param mixed $value
-     * @return bool
-     */
-    public function setAttribute($attribute, $value)
+	
+    public function fetchAll($statement)
     {
-    	return self::$PDOInstance->setAttribute($attribute, $value);
+    	return self::$PDOInstance->query($statement)->fetchAll(PDO::FETCH_ASSOC);
     }
     
+    public function fetchRow($statement)
+    {
+    	return self::$PDOInstance->query($statement)->fetch(PDO::FETCH_ASSOC);
+    }
+    
+	public function select()
+	{
+		return new DbSelect();
+	}
+	
+	public function getAll($where = null, $order = null, $limit = null)
+	{
+		$select = $this->select()
+			->from($this->_name);
+		if(!is_null($where)){
+			foreach ($where AS $key => $value){
+				$select->where($key . " = ?", $value);
+			}
+		}
+		if(!is_null($order)){
+			foreach ($order AS $key => $value){
+				$select->order($key, $value);
+			}
+		}
+		if(!is_null($limit)){
+			$select->limit($limit);
+		}
+		return $this->fetchAll($select->query);
+	}
+	
+	public function getById($id)
+	{
+		$select = $this->select()
+			->from($this->_name)
+			->where("id = ?", $id);
+		return $this->fetchRow($select->query);
+	}
+	
 	public function insert(array $data)
 	{
 		$statement = "INSERT INTO " . $this->_name . "(" .implode(",", array_map("mysql_escape_string", array_keys($data))) . ") VALUES ('" . implode("', '", array_map("mysql_escape_string", array_values($data))) . "');";
@@ -225,18 +190,27 @@ class DbTable
 		return self::$PDOInstance->lastInsertId();
 	}
 	
-//	public function select()
-//	{}
-//	
-//	public function fetchAll()
-//	{}
-//	
-//	public function fetchRow()
-//	{}
-//	
-//	public function update(array $data)
-//	{}
-//	
-//	public function delete(array $data)
-//	{}
+	public function update(array $data, $where)
+	{
+		$statement = "UPDATE " . $this->_name . " SET ";
+		$quote = "";
+		foreach($data AS $key => $value){
+			$statement .= $quote . $key . "='" . $value . "'";
+			$quote = ",";
+		}
+		$statement .= " WHERE " . $where;
+		
+		self::$PDOInstance->exec($statement);
+	}
+	
+	public function delete($where)
+	{
+		$statement = "DELETE FROM " . $this->_name . " WHERE " . $where;
+		self::$PDOInstance->exec($statement);
+	}
+
+	public function quoteInto($key, $value)
+	{
+		return str_replace("?", "'{$value}'", $key) . " ";
+	}
 }
